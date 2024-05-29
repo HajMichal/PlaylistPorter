@@ -2,6 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-spotify';
 
+interface SpotifyProfile {
+  id: string;
+  provider: string;
+  displayName: string;
+  email: string;
+  photos: {
+    value: string;
+  }[];
+  profileUrl: string;
+}
 @Injectable()
 export class SpotifyStrategy extends PassportStrategy(Strategy, 'spotify') {
   constructor() {
@@ -16,17 +26,17 @@ export class SpotifyStrategy extends PassportStrategy(Strategy, 'spotify') {
   async validate(
     _accessToken: string,
     _refreshToken: string,
-    profile: any,
+    profile: SpotifyProfile,
     done: VerifyCallback,
   ): Promise<any> {
-    const { provider, id, displayName, emails, photos } = profile;
-
+    const { provider, id, displayName, email, photos, profileUrl } = profile;
     const user = {
       provider: provider,
       providerId: id,
-      email: emails[0].value,
+      email: email,
       name: displayName,
       picture: photos[0].value,
+      profileUrl: profileUrl,
     };
     done(null, user);
   }

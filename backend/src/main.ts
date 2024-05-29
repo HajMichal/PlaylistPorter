@@ -16,6 +16,5 @@ async function bootstrap() {
     allowedHeaders: ['content-type'],
   });
   await app.listen(process.env.PORT);
-  console.log('http://localhost:' + process.env.PORT);
 }
 bootstrap();
