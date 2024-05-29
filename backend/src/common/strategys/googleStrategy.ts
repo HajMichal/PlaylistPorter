@@ -27,7 +27,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       name: `${name.givenName} ${name.familyName}`,
       picture: photos[0].value,
     };
-    console.log(user);
     done(null, user);
   }
 }

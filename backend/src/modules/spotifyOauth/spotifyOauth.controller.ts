@@ -1,18 +1,18 @@
 import { Controller, Get, Redirect, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
-import { GoogleOauthGuard } from 'src/common/guards/googleOAuth.guard';
+import { SpotifyOauthGuard } from 'src/common/guards/spotifyOauth.guard';
 
-@Controller('auth/google')
-export class AuthController {
+@Controller('auth/spotify')
+export class SpotifyOauthController {
   constructor() {}
 
   @Get()
-  @UseGuards(GoogleOauthGuard)
+  @UseGuards(SpotifyOauthGuard)
   async oAuth() {}
 
   @Get('callback')
-  @UseGuards(GoogleOauthGuard)
-  @Redirect('http://localhost:5173/')
+  @UseGuards(SpotifyOauthGuard)
+  @Redirect('http://localhost:5173')
   async googleAuthCallback(@Req() req: Request) {
     return req.user;
   }
