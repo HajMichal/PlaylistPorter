@@ -1,13 +1,11 @@
-function GoogleOauth() {
+export function GoogleOauth() {
   const login = () => {
-    window.location.href = "http://localhost:3000/auth/google";
+    window.location.href = import.meta.env.VITE_SERVER_URL + "/auth/google";
   };
 
   return (
     <div>
-      <button onClick={() => login()}>test</button>
+      <button onClick={() => login()}>google</button>
     </div>
   );
 }
-
-export default GoogleOauth;
