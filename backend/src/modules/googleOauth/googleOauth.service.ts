@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { Response } from 'express';
 
 @Injectable()
 export class GoogleOauthService {
   constructor() {}
-  async findAll() {}
+  setGoogleCookies(res: Response, accessToken) {
+    res.cookie('googleAccessToken', accessToken, {
+      secure: true,
+      httpOnly: true,
+    });
+  }
 }

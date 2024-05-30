@@ -1,20 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { catchError, map, Observable } from 'rxjs';
-
-export interface YoutubePlaylistResponse {
-  data: {
-    items: SongType[];
-  };
-}
-export interface SongType {
-  id: string;
-  etag: string;
-  snippet: {
-    title: string;
-    videoOwnerChannelTitle: string;
-  };
-}
+import { GetYTPlayListDto, SongDto } from './DTO';
+import { songsFromYtMapper } from 'src/common/mapper/songsFromYtMapper';
 
 @Injectable()
 export class CourierService {
@@ -23,30 +11,27 @@ export class CourierService {
   async convertToSpotifyPlayList(
     playlistLink: string,
     accessToken: string,
-  ): Promise<Observable<SongType[]>> {
+  ): Promise<Observable<SongDto[]>> {
     const playlistId = playlistLink.split('=')[1];
     return this.getYTPlayList(playlistId, accessToken).pipe(
-      map(({ data }: YoutubePlaylistResponse) => {
-        const songs: SongType[] = [];
-
-        data.items.map((song) => {
-          const transformedSong = {
-            id: song.id,
-            etag: song.etag,
-            snippet: {
-              title: song.snippet.title,
-              videoOwnerChannelTitle: song.snippet.videoOwnerChannelTitle,
-            },
-          };
-          songs.push(transformedSong);
-        });
-        return songs;
+      map(({ data }: GetYTPlayListDto) => {
+        return this.transformSongsData(data.items);
       }),
       catchError(({ response }) => {
         const error = response.data.error;
         throw new HttpException(error.message, error.code);
       }),
     );
+  }
+
+  private transformSongsData(songs: SongDto[]) {
+    const transformedSongs: SongDto[] = [];
+
+    songs.map((song) => {
+      const transformedSong = songsFromYtMapper(song);
+      songs.push(transformedSong);
+    });
+    return transformedSongs;
   }
 
   private getYTPlayList(playlistId: string, accessToken: string) {

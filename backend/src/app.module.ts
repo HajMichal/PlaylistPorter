@@ -3,7 +3,7 @@ import { GoogleOauthModule } from './modules/googleOauth/googleOauth.module';
 import { CourierModule } from './modules/courier/courier.module';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { SpotifyOauthModule } from './modules/spotifyOauth/sportifyOauth.module';
+import { SpotifyOauthModule } from './modules/spotifyOauth/spotifyOauth.module';
 
 @Module({
   imports: [

@@ -2,10 +2,11 @@ import { Controller, Get, Redirect, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { SpotifyOauthGuard } from 'src/common/guards/spotifyOauth.guard';
 import { spotifyUserSchema } from './DTO';
+import { SpotifyOauthService } from './spotifyOauth.service';
 
 @Controller('auth/spotify')
 export class SpotifyOauthController {
-  constructor() {}
+  constructor(private spotifyService: SpotifyOauthService) {}
 
   @Get()
   @UseGuards(SpotifyOauthGuard)
@@ -15,15 +16,11 @@ export class SpotifyOauthController {
   @UseGuards(SpotifyOauthGuard)
   @Redirect('http://localhost:5173')
   async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
-    console.log(req.cookies);
-    res.cookie('spotifyAccessToken', req.user.accessToken, {
-      secure: true,
-      httpOnly: true,
-    });
-    res.cookie('spotifyRefreshToken', req.user.refreshToken, {
-      secure: true,
-      httpOnly: true,
-    });
+    this.spotifyService.setSpotifyCookies(
+      res,
+      req.user.accessToken,
+      req.user.refreshToken,
+    );
     return spotifyUserSchema.parse(req.user);
   }
 }
