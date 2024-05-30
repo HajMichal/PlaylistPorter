@@ -19,7 +19,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_KEY,
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
-      scope: ['profile', 'email'],
+      scope: [
+        'profile',
+        'email',
+        'https://www.googleapis.com/auth/youtube',
+        'https://www.googleapis.com/auth/youtube.force-ssl',
+      ],
     });
   }
   async validate(
@@ -35,7 +40,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       email: email,
       name: displayName,
       picture: photos[0].value,
+      accessToken: _accessToken,
     };
+    console.log(_accessToken);
     done(null, user);
   }
 }

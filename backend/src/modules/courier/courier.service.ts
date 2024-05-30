@@ -1,17 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { map } from 'rxjs';
+import { catchError, map, Observable } from 'rxjs';
 
 export interface YoutubePlaylistResponse {
   data: {
-    items: {
-      id: string;
-      etag: string;
-      snippet: {
-        title: string;
-        videoOwnerChannelTitle: string;
-      };
-    };
+    items: SongType[];
+  };
+}
+export interface SongType {
+  id: string;
+  etag: string;
+  snippet: {
+    title: string;
+    videoOwnerChannelTitle: string;
   };
 }
 
@@ -19,19 +20,44 @@ export interface YoutubePlaylistResponse {
 export class CourierService {
   constructor(private readonly httpService: HttpService) {}
 
-  convertToSpotifyPlayList(playlistLink: string) {
+  async convertToSpotifyPlayList(
+    playlistLink: string,
+    accessToken: string,
+  ): Promise<Observable<SongType[]>> {
     const playlistId = playlistLink.split('=')[1];
-    return this.getYTPlayList(playlistId).pipe(
+    return this.getYTPlayList(playlistId, accessToken).pipe(
       map(({ data }: YoutubePlaylistResponse) => {
-        console.log(data.items);
-        return data.items;
+        const songs: SongType[] = [];
+
+        data.items.map((song) => {
+          const transformedSong = {
+            id: song.id,
+            etag: song.etag,
+            snippet: {
+              title: song.snippet.title,
+              videoOwnerChannelTitle: song.snippet.videoOwnerChannelTitle,
+            },
+          };
+          songs.push(transformedSong);
+        });
+        return songs;
+      }),
+      catchError(({ response }) => {
+        const error = response.data.error;
+        throw new HttpException(error.message, error.code);
       }),
     );
   }
 
-  private getYTPlayList(playlistId) {
+  private getYTPlayList(playlistId: string, accessToken: string) {
     return this.httpService.get(
-      `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&playlistId=${playlistId}&key=${process.env.GOOGLE_API_KEY}`,
+      `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&key=${process.env.GOOGLE_API_KEY}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/json',
+        },
+      },
     );
   }
 }

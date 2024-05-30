@@ -1,14 +1,22 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { CourierService } from './courier.service';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { Cookies } from 'src/common/decorators/cookies.decorator';
 
 @Controller('courier')
 export class CourierController {
   constructor(private courierService: CourierService) {}
 
   // [TODO]: check is user authorized by youtube and spotify
-  @Post('youtube/spotify')
-  convertToSpotifyPlayList(@Body() body: { playlistLink: string }) {
-    console.log(body);
-    return this.courierService.convertToSpotifyPlayList(body.playlistLink);
+  @Get('youtube/spotify')
+  @UseGuards(AuthGuard)
+  convertToSpotifyPlayList(
+    @Query() query: { playlistLink: string },
+    @Cookies('googleAccessToken') googleAccessToken: string,
+  ) {
+    return this.courierService.convertToSpotifyPlayList(
+      query.playlistLink,
+      googleAccessToken,
+    );
   }
 }

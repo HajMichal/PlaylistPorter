@@ -6,7 +6,10 @@ interface SpotifyProfile {
   id: string;
   provider: string;
   displayName: string;
-  email: string;
+  emails: {
+    value: string;
+    type?: string;
+  }[];
   photos: {
     value: string;
   }[];
@@ -29,14 +32,16 @@ export class SpotifyStrategy extends PassportStrategy(Strategy, 'spotify') {
     profile: SpotifyProfile,
     done: VerifyCallback,
   ): Promise<any> {
-    const { provider, id, displayName, email, photos, profileUrl } = profile;
+    const { provider, id, displayName, emails, photos, profileUrl } = profile;
     const user = {
       provider: provider,
       providerId: id,
-      email: email,
+      email: emails[0].value,
       name: displayName,
       picture: photos[0].value,
       profileUrl: profileUrl,
+      accessToken: _accessToken,
+      refreshToken: _refreshToken,
     };
     done(null, user);
   }
