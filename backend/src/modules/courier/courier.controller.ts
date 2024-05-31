@@ -13,10 +13,12 @@ export class CourierController {
   convertToSpotifyPlayList(
     @Query() query: { playlistLink: string },
     @Cookies('googleAccessToken') googleAccessToken: string,
+    @Cookies('spotifyAccessToken') spotifyAccessToken: string,
   ) {
     return this.courierService.convertToSpotifyPlayList(
       query.playlistLink,
       googleAccessToken,
+      spotifyAccessToken,
     );
   }
 }
