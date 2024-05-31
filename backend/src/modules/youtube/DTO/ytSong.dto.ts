@@ -1,5 +1,5 @@
 import { z } from 'zod';
-export const songSchema = z.object({
+export const ytSongSchema = z.object({
   id: z.string(),
   etag: z.string(),
   snippet: z.object({
@@ -8,4 +8,4 @@ export const songSchema = z.object({
   }),
 });
 
-export type SongDto = z.infer<typeof songSchema>;
+export type YtSongDto = z.infer<typeof ytSongSchema>;

@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { songSchema } from './song.dto';
+import { ytSongSchema } from './ytSong.dto';
 export const getYTPlayListSchema = z.object({
   data: z.object({
-    items: songSchema.array(),
+    items: ytSongSchema.array(),
   }),
 });
 

@@ -1,7 +1,7 @@
-import { SongDto } from 'src/modules/courier/DTO';
+import { YtSongDto } from 'src/modules/youtube/DTO';
 
 const pattern = /\s-\sTopic/;
-export const songsFromYtMapper = (song: SongDto) => {
+export const songsFromYtMapper = (song: YtSongDto) => {
   return {
     id: song.id,
     etag: song.etag,

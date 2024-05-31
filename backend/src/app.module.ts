@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { GoogleOauthModule } from './modules/googleOauth/googleOauth.module';
 import { CourierModule } from './modules/courier/courier.module';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { SpotifyOauthModule } from './modules/spotifyOauth/spotifyOauth.module';
+import { OAuthModule } from './modules/oAuth/oAuth.module';
+import { SpotifyModule } from './modules/spotify/spotify.module';
+import { YoutubeModule } from './modules/youtube/youtube.module';
 
 @Module({
   imports: [
@@ -12,10 +13,11 @@ import { SpotifyOauthModule } from './modules/spotifyOauth/spotifyOauth.module';
       envFilePath: '.env',
     }),
 
-    GoogleOauthModule,
     CourierModule,
-    SpotifyOauthModule,
     PassportModule.register({ session: true }),
+    OAuthModule,
+    SpotifyModule,
+    YoutubeModule,
   ],
   controllers: [],
   providers: [],

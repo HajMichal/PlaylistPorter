@@ -1,2 +1,2 @@
-export * from './song.dto';
 export * from './getYtPlaylist.dto';
+export * from './ytSong.dto';
