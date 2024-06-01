@@ -33,6 +33,13 @@ export class YoutubeService {
       ),
     );
   }
+
+  private formatSongsData(songs: YtSongDto[]) {
+    const transformedSongs: YtSongDto[] = [];
+    songs.map((song) => transformedSongs.push(songsFromYtMapper(song)));
+    return transformedSongs;
+  }
+
   private baseHttpService(queryParamsUrl: string, accessToken: string) {
     return this.httpService.get(
       `https://youtube.googleapis.com/youtube/v3/${queryParamsUrl}&key=${process.env.GOOGLE_API_KEY}`,
@@ -43,11 +50,5 @@ export class YoutubeService {
         },
       },
     );
-  }
-
-  private formatSongsData(songs: YtSongDto[]) {
-    const transformedSongs: YtSongDto[] = [];
-    songs.map((song) => transformedSongs.push(songsFromYtMapper(song)));
-    return transformedSongs;
   }
 }

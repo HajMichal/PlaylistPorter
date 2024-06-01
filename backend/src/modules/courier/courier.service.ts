@@ -11,16 +11,23 @@ export class CourierService {
   ) {}
 
   async convertToSpotifyPlayList(
-    playlistLink: string,
+    youtubePlaylistLink: string,
+    spotifyPlaylistLink: string,
     googleAccessToken: string,
     spotifyAccessToken: string,
   ): Promise<YtSongDto[]> {
-    const playlistId = playlistLink.split('=')[1];
+    const youtubePlaylistId = youtubePlaylistLink.split('=')[1];
+    const spotifyPlaylistId = spotifyPlaylistLink.split('/').reverse()[0];
+
     const songs = await this.youtubeService.formatedYtSongs(
-      playlistId,
+      youtubePlaylistId,
       googleAccessToken,
     );
-    await this.spotifyService.searchSpotifySongs(songs, spotifyAccessToken);
+    await this.spotifyService.searchSpotifySongs(
+      songs,
+      spotifyAccessToken,
+      spotifyPlaylistId,
+    );
     return songs;
   }
 }

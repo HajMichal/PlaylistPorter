@@ -11,12 +11,14 @@ export class CourierController {
   @Get('youtube/spotify')
   @UseGuards(AuthGuard)
   convertToSpotifyPlayList(
-    @Query() query: { playlistLink: string },
+    @Query()
+    query: { youtubePlaylistLink: string; spotifyPlaylistLink: string },
     @Cookies('googleAccessToken') googleAccessToken: string,
     @Cookies('spotifyAccessToken') spotifyAccessToken: string,
   ) {
     return this.courierService.convertToSpotifyPlayList(
-      query.playlistLink,
+      query.youtubePlaylistLink,
+      query.spotifyPlaylistLink,
       googleAccessToken,
       spotifyAccessToken,
     );

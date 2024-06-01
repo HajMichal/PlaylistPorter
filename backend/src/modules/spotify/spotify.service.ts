@@ -9,31 +9,31 @@ import { songsFromSpotifyMapper } from 'src/common/mapper/songsFromSpotifyMapper
 export class SpotifyService {
   constructor(private readonly httpService: HttpService) {}
 
-  async searchSpotifySongs(songs: YtSongDto[], accessToken: string) {
+  async searchSpotifySongs(
+    songs: YtSongDto[],
+    accessToken: string,
+    playlistId: string,
+  ) {
     try {
-      const spotifySongsUris = await this.transformSpotifySongs(
+      const spotifySongsUris = await this.mapSongsToSpotifyFormat(
         songs,
         accessToken,
       );
-      await this.addSongsToPlaylist(spotifySongsUris, accessToken);
+      await this.addSongsToPlaylist(playlistId, spotifySongsUris, accessToken);
     } catch (error) {
       const errResponse = error.response.data.error;
       throw new HttpException(errResponse.message, errResponse.code);
     }
   }
 
-  // [TODO]: rebuild this function, for now it is hard to read
-  private async transformSpotifySongs(songs: YtSongDto[], accessToken: string) {
+  private async mapSongsToSpotifyFormat(
+    songs: YtSongDto[],
+    accessToken: string,
+  ) {
     return Promise.all(
       songs.map(async ({ snippet }) => {
-        const songFromSpotifyRequest = this.getSongRequest(
-          snippet.title,
-          accessToken,
-        );
-        const { data } = await songFromSpotifyRequest;
-
-        const spotifySongUri = songsFromSpotifyMapper(data.tracks.items[0]);
-        return spotifySongUri;
+        const { data } = await this.getSongRequest(snippet.title, accessToken);
+        return songsFromSpotifyMapper(data.tracks.items[0].id);
       }),
     );
   }
@@ -52,13 +52,13 @@ export class SpotifyService {
   }
 
   private async addSongsToPlaylist(
-    // playlistId?: string,
+    playlistId: string,
     spotifySongsUris: string[],
     accessToken: string,
   ) {
     return await firstValueFrom(
       this.baseHttpPostService(
-        `playlists/${'1YjP671jIQK3Kyg6ElaVoF'}/tracks`,
+        `playlists/${playlistId}/tracks`,
         spotifySongsUris,
         accessToken,
       ),
@@ -80,7 +80,6 @@ export class SpotifyService {
     body: string[],
     accessToken: string,
   ) {
-    console.log(body);
     return this.httpService.post(
       `https://api.spotify.com/v1/${queryParamsUrl}`,
       {
