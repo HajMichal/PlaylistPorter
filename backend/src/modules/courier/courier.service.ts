@@ -20,7 +20,7 @@ export class CourierService {
       playlistId,
       googleAccessToken,
     );
-    this.spotifyService.searchSpotifySongs(songs, spotifyAccessToken);
+    await this.spotifyService.searchSpotifySongs(songs, spotifyAccessToken);
     return songs;
   }
 }
