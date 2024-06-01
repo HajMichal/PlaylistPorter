@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    overflow: hidden;
+    height: 100vh;
+}
+  
+  .blue-element {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, #33FFE3, transparent);
+    transform: rotate(45deg);
+    filter: blur(150px);
+  }
+
+  .purple-element {
+    position: absolute;
+    bottom: -50px;
+    left: -100px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, #ff00ff, transparent);
+    transform: rotate(45deg);
+    filter: blur(200px);
+  }

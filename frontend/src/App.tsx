@@ -1,22 +1,13 @@
-import { useEffect } from "react";
-import { GoogleOauth, SpotifyOauth } from "./components";
-import axios from "axios";
-const playlistId = "PLP7_sQyUavJQuSljPucGkkK78HM0mV7zP";
-function App() {
-  useEffect(() => {
-    // getting songs from youtube
-    axios.get(
-      `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&playlistId=${playlistId}&key=${
-        import.meta.env.VITE_GOOGLE_API_KEY
-      }`
-    );
-  }, []);
+import { Footer, Oauth, YtToSpotifyForm } from "./components";
 
+function App() {
   return (
-    <div>
-      <GoogleOauth />
-      <SpotifyOauth />
-      <input type="text" placeholder="YOUTUBE playlist link" />
+    <div className="p-2 md:p-10">
+      <Oauth />
+      <YtToSpotifyForm />
+      <Footer />
+      <div className="purple-element" />
+      <div className="blue-element" />
     </div>
   );
 }
