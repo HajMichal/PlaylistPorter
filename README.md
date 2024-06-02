@@ -5,7 +5,7 @@
 <br/>
 
 ## Good to know
-This service is a Single Page Application with a minimalist design, and all logic is handled server-side. I created this project for a friend who needed an efficient way to transfer songs from YouTube playlists to Spotify.
+This service is a Single Page Application with a minimalist design, and all logic is handled server-side. I created this project for a friend who needed an efficient way to transfer songs from YouTube playlists to Spotify. The programme handles maximum 100 songs simultaneously. 
 
 <br/>
 
