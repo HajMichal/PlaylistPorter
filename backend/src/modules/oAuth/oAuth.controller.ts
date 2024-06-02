@@ -17,7 +17,11 @@ export class OAuthController {
   @UseGuards(GoogleOauthGuard)
   @Redirect('http://localhost:5173')
   async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
-    this.oAuthService.setGoogleCookies(res, req.user.accessToken);
+    this.oAuthService.setGoogleCookies(
+      res,
+      req.user.accessToken,
+      req.user.refreshToken,
+    );
     return googleUserSchema.parse(req.user);
   }
 

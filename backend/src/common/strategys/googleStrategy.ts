@@ -1,17 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback } from 'passport-google-oauth2';
+import { Strategy, VerifyCallback, Profile } from 'passport-google-oauth20';
 
-interface GoogleProfile {
-  id: string;
-  provider: string;
-  displayName: string;
-  email: string;
-  photos: {
-    value: string;
-    type: string;
-  }[];
-}
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor() {
@@ -20,6 +10,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientSecret: process.env.GOOGLE_CLIENT_KEY,
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
       scope: [
+        'openid',
         'profile',
         'email',
         'https://www.googleapis.com/auth/youtube',
@@ -30,17 +21,20 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   async validate(
     _accessToken: string,
     _refreshToken: string,
-    profile: GoogleProfile,
+    profile: Profile,
     done: VerifyCallback,
   ): Promise<any> {
-    const { id, provider, displayName, email, photos } = profile;
+    console.log(_accessToken);
+    console.log(_refreshToken);
+    const { id, provider, displayName, emails, photos } = profile;
     const user = {
       provider: provider,
       providerId: id,
-      email: email,
+      email: emails[0].value,
       name: displayName,
       picture: photos[0].value,
       accessToken: _accessToken,
+      refreshToken: _refreshToken,
     };
     done(null, user);
   }

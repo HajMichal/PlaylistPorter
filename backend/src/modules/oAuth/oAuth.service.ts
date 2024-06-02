@@ -3,14 +3,18 @@ import { Response } from 'express';
 
 @Injectable()
 export class OAuthService {
-  setGoogleCookies(res: Response, accessToken) {
+  setGoogleCookies(res: Response, accessToken: string, refreshToken: string) {
     res.cookie('googleAccessToken', accessToken, {
+      secure: true,
+      httpOnly: true,
+    });
+    res.cookie('googleRefreshToken', refreshToken, {
       secure: true,
       httpOnly: true,
     });
   }
 
-  setSpotifyCookies(res: Response, accessToken, refreshToken) {
+  setSpotifyCookies(res: Response, accessToken: string, refreshToken: string) {
     res.cookie('spotifyAccessToken', accessToken, {
       secure: true,
       httpOnly: true,
