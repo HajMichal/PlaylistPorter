@@ -16,9 +16,10 @@ export class OauthGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    const { googleAccessToken } = request.cookies;
+    const { googleAccessToken, spotifyAccessToken } = request.cookies;
 
-    if (!googleAccessToken) throw new UnauthorizedException();
+    if (!googleAccessToken || !spotifyAccessToken)
+      throw new UnauthorizedException();
 
     return this.validateGoogleAccessToken(googleAccessToken)
       .then(() => {
