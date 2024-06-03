@@ -8,7 +8,7 @@ body {
     height: 100vh;
 }
   
-  .blue-element {
+  .blueElement {
     position: absolute;
     top: -50px;
     right: -50px;
@@ -19,7 +19,7 @@ body {
     filter: blur(150px);
   }
 
-  .purple-element {
+  .purpleElement {
     position: absolute;
     bottom: -50px;
     left: -100px;

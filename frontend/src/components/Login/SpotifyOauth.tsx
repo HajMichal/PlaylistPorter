@@ -12,7 +12,7 @@ export function SpotifyOauth() {
     >
       <div className="flex items-center gap-4">
         <p className="font-bold text-white text-lg">Connect with Spotify</p>
-        <SpotifyIcon />
+        <SpotifyIcon color={"#fff"} />
       </div>
     </button>
   );

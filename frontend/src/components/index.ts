@@ -4,3 +4,4 @@ export * from "./CustomInput";
 export * from "./Form/YoutubeSpotifyForm";
 export * from "./Footer";
 export * from "./Oauth";
+export * from "./PlatformInfo";

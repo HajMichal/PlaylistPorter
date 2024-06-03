@@ -9,5 +9,6 @@ export const sendLinks = async (
       youtubePlaylistLink,
       spotifyPlaylistLink,
     },
+    withCredentials: true,
   });
 };
