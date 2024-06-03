@@ -1,7 +1,7 @@
 import { Button } from "@mantine/core";
 import { CustomInput } from "../CustomInput";
 import { useState } from "react";
-import { sendLinks } from "../../fetch/courier/sendLinks";
+import { sendLinks } from "../../fetch/sendLinks";
 import toast, { Toaster } from "react-hot-toast";
 
 export const YtToSpotifyForm = () => {
@@ -10,12 +10,11 @@ export const YtToSpotifyForm = () => {
 
   const handleSendLink = async () => {
     if (youtubeLink && spotifyLink) {
-      const response = toast.promise(sendLinks(youtubeLink, spotifyLink), {
+      toast.promise(sendLinks(youtubeLink, spotifyLink), {
         loading: "Transporting",
         success: <b>Songs transported!</b>,
-        error: <b>Songs cannot be transported</b>,
+        error: <b>Songs cannot be transported. Try again!</b>,
       });
-      console.log(await response);
     }
   };
 
@@ -24,7 +23,7 @@ export const YtToSpotifyForm = () => {
       <CustomInput label="YouTube playlist link" setter={setYoutubeLink} />
       <CustomInput label="Spotify playlist link" setter={setSpotifyLink} />
       <Button onClick={handleSendLink} variant="filled" size="md" color="dark">
-        Transform
+        Transport
       </Button>
       <Toaster position="top-center" reverseOrder={false} />
     </div>

@@ -1,4 +1,4 @@
-import { axiosBaseInstance } from "../axiosBase";
+import { axiosBaseInstance } from "./axiosBase";
 
 export const sendLinks = async (
   youtubePlaylistLink: string,
