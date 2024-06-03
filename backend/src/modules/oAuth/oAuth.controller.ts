@@ -1,11 +1,12 @@
-import { Controller, Get, Redirect, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { OAuthService } from './oAuth.service';
 import { GoogleOauthGuard } from 'src/common/guards/googleOauth.guard';
 import { googleUserSchema, spotifyUserSchema } from './DTO';
 import { Request, Response } from 'express';
 import { SpotifyOauthGuard } from 'src/common/guards/spotifyOauth.guard';
+import { Cookies } from 'src/common/decorators/cookies.decorator';
 
-@Controller('oauth/')
+@Controller('oauth')
 export class OAuthController {
   constructor(private oAuthService: OAuthService) {}
 
@@ -15,8 +16,7 @@ export class OAuthController {
 
   @Get('google/callback')
   @UseGuards(GoogleOauthGuard)
-  @Redirect('http://localhost:5173')
-  async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
+  googleAuthCallback(@Req() req: Request, @Res() res: Response) {
     this.oAuthService.setGoogleCookies(
       res,
       req.user.accessToken,
@@ -31,13 +31,23 @@ export class OAuthController {
 
   @Get('spotify/callback')
   @UseGuards(SpotifyOauthGuard)
-  @Redirect('http://localhost:5173')
-  async spotifyAuthCallback(@Req() req: Request, @Res() res: Response) {
+  spotifyAuthCallback(@Req() req: Request, @Res() res: Response) {
     this.oAuthService.setSpotifyCookies(
       res,
       req.user.accessToken,
       req.user.refreshToken,
     );
     return spotifyUserSchema.parse(req.user);
+  }
+
+  @Get('spotify/refresh_token')
+  async spotifyRefreshToken(
+    @Cookies('spotifyRefreshToken') spotifyRefreshToken: string,
+    @Res() res: Response,
+  ) {
+    return await this.oAuthService.refreshSpotifyToken(
+      spotifyRefreshToken,
+      res,
+    );
   }
 }
