@@ -6,10 +6,11 @@ import { YoutubeModule } from '../youtube/youtube.module';
 import { SpotifyModule } from '../spotify/spotify.module';
 import { YoutubeService } from '../youtube/youtube.service';
 import { SpotifyService } from '../spotify/spotify.service';
+import { OAuthService } from '../oAuth/oAuth.service';
 
 @Module({
   imports: [HttpModule, YoutubeModule, SpotifyModule],
   controllers: [CourierController],
-  providers: [CourierService, YoutubeService, SpotifyService],
+  providers: [CourierService, YoutubeService, SpotifyService, OAuthService],
 })
 export class CourierModule {}

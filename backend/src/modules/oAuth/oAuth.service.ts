@@ -35,7 +35,7 @@ export class OAuthService {
   async refreshSpotifyToken(refreshToken: string, res: Response) {
     const accessToken = await this.refreshTokenRequest(refreshToken);
     res.cookie('spotifyAccessToken', accessToken);
-    return accessToken;
+    return { status: 200, message: 'Spotify token has been refreshed' };
   }
 
   private async refreshTokenRequest(refreshToken: string) {

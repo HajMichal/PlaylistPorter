@@ -4,37 +4,75 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { Reflector } from '@nestjs/core';
 import axios from 'axios';
+import { OAuthService } from 'src/modules/oAuth/oAuth.service';
+import { Response } from 'express';
 
 @Injectable()
 export class OauthGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  constructor(private oAuthService: OAuthService) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    const response: Response = context.switchToHttp().getResponse();
     const { googleAccessToken, spotifyAccessToken } = request.cookies;
 
     if (!googleAccessToken || !spotifyAccessToken)
       throw new UnauthorizedException();
 
-    return this.validateGoogleAccessToken(googleAccessToken)
-      .then(() => {
-        return true;
-      })
-      .catch(() => {
-        return false;
-      });
+    const isGoogleValid = await this.isGoogleTokenValid(googleAccessToken);
+    const isSpotifyValid = await this.isSpotifyTokenValid(
+      spotifyAccessToken,
+      response,
+    );
+
+    if (isGoogleValid && isSpotifyValid) return true;
+    else return false;
   }
 
-  async validateGoogleAccessToken(googleAccessToken: string) {
+  private async isGoogleTokenValid(
+    googleAccessToken: string,
+  ): Promise<boolean> {
+    try {
+      await this.checkGoogleTokenReq(googleAccessToken);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private async isSpotifyTokenValid(
+    spotifyAccessToken: string,
+    response: Response,
+  ): Promise<boolean> {
+    try {
+      await this.checkSpotifyTokenReq(spotifyAccessToken);
+      return true;
+    } catch {
+      return !!this.oAuthService.refreshSpotifyToken(
+        spotifyAccessToken,
+        response,
+      );
+    }
+  }
+
+  async checkGoogleTokenReq(googleAccessToken: string) {
     try {
       await axios.get(
         `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${googleAccessToken}`,
       );
+      return true;
+    } catch {
+      throw new UnauthorizedException();
+    }
+  }
+  async checkSpotifyTokenReq(spotifyAccessToken: string) {
+    try {
+      await axios.get('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: `Bearer ${spotifyAccessToken}`,
+        },
+      });
       return true;
     } catch {
       throw new UnauthorizedException();

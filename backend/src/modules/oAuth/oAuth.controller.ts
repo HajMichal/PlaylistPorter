@@ -4,7 +4,6 @@ import { GoogleOauthGuard } from 'src/common/guards/googleOauth.guard';
 import { googleUserSchema, spotifyUserSchema } from './DTO';
 import { Request, Response } from 'express';
 import { SpotifyOauthGuard } from 'src/common/guards/spotifyOauth.guard';
-import { Cookies } from 'src/common/decorators/cookies.decorator';
 
 @Controller('oauth')
 export class OAuthController {
@@ -38,16 +37,5 @@ export class OAuthController {
       req.user.refreshToken,
     );
     return spotifyUserSchema.parse(req.user);
-  }
-
-  @Get('spotify/refresh_token')
-  async spotifyRefreshToken(
-    @Cookies('spotifyRefreshToken') spotifyRefreshToken: string,
-    @Res() res: Response,
-  ) {
-    return await this.oAuthService.refreshSpotifyToken(
-      spotifyRefreshToken,
-      res,
-    );
   }
 }
